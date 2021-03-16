@@ -53,11 +53,16 @@ unzip container-uber-jar.zip
 
 At the root of the project, create a `docker-maven/Dockerfile` build file:
 
+ifdef::env-github[]
+link:docker-maven/Dockerfile[Docker build file for a Maven project]
+endif::env-github[]
+ifndef::env-github[]
 [source,dockerfile]
 .Docker build file for a Maven project
 ----
 include::docker-maven/Dockerfile[]
 ----
+endif::env-github[]
 
 The Docker build has two stages:
 
@@ -109,11 +114,16 @@ unzip container-uber-jar.zip
 
 At the root of the project, create a `docker-gradle/Dockerfile` build file:
 
+ifdef::env-github[]
+link:docker-gradle/Dockerfile[Docker build file for a Gradle project]
+endif::env-github[]
+ifndef::env-github[]
 [source,dockerfile]
 .Docker build file for a Gradle project
 ----
 include::docker-gradle/Dockerfile[]
 ----
+endif::env-github[]
 
 The Docker build has two stages:
 
