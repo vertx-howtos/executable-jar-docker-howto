@@ -2,6 +2,10 @@
 :page-permalink: /
 :page-github: vertx-howtos/executable-jar-docker-howto
 
+ifdef::env-github[]
+image:https://github.com/vertx-howtos/executable-jar-docker-howto/actions/workflows/publish.yml/badge.svg["Publish the how-to", link="https://github.com/vertx-howtos/executable-jar-docker-howto/actions/workflows/publish.yml"]
+endif::env-github[]
+
 == What you will create
 
 You will create a container for a Vert.x app packaged as an executable https://stackoverflow.com/a/11947093/2133695[_uber-jar_].
