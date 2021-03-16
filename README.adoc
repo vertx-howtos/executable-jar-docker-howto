@@ -1,160 +1,162 @@
-= Template and instructions for the Eclipse Vert.x how-tos
-:author: Julien Ponge <julien.ponge@gmail.com>
-:toc:
-
-This repository can be cloned and used as a basis for creating a new Eclipse Vert.x how-to.
-It especially contains the https://jekyllrb.com/[Jekyll] and continuous integration configurations for publishing a how-to as a web page.
-
-== Conventions
-
-Each how-to is a self-contained Git repository of the https://github.com/vertx-howtos[corresponding organisation on GitHub].
-
-The how-to document is written using the https://asciidoctor.org/docs/what-is-asciidoc/[Asciidoc] text format in a file called `README.adoc` at the root of the Git repository.
-
-The accompanying source code is directly at the root of the Git repository.
-For instance a Maven `pom.xml` is co-located with `README.adoc` at the root of the repository.
-
-Projects should preferably have both Maven and Gradle build descriptors.
-An author who doesn't have knowledge of either of the tools can always ask for contributions.
-
-== Structure of a how-to
-
-A how-to is not a guide or a mini-book: it must be as concise as possible.
-
-In practice this means that each how-to must focus on a very narrow topic.
-It also means that the text must not deviate from the topic, and that the chosen example must be as simple as possible.
-
-The structure of a how-to must be as follows.
-
-=== What you will build
-
-- Explain the example scenario from a functional point of view.
-- Explain what the user can see when running the example.
-- Highlight the different pieces of code to be written and how they fit together.
-
-=== What you need
-
-- List all required tools to edit, build and run the how-to.
-- Do not hesitate to point to third-party resources (e.g., if you need Docker, say why you need it and point to its installation documentation).
-
-=== Create a project
-
-- Explain how to create the project.
-- Show the Maven / Gradle build descriptors.
-- For any third-party tool (e.g., running a database with Docker), also have a subsection to explain this.
-
-=== Implementation sections
-
-- Make one or multiple sections to show the implementation.
-- Make use of Asciidoc source code comments to highlight specific parts of the code.
-- The code must be included using https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#source-code[Asciidoc directives]. Remember that you can include fragments of code by using delimiter tags.
-
-=== Running the application
-
-- Always show the various options to run the application.
-
-=== Summary
-
-- Briefly recapitulate what was covered and learned in the how-to.
-
-=== See also
-
-- If possible, link to other how-tos.
-- If judicious, link to Vert.x or third-party documentation.
-
-== How is the website being rendered?
-
-The website is being rendered using Jekyll and the Asciidoctor extension for Jekyll.
-
-There is a https://github.com/vertx-howtos/vertx-howtos-jekyll-theme[Jekyll theme] published as a Ruby Gem, so every how-to uses a common theme.
-
-=== Asciidoctor attributes
-
-The common theme depends on the following attributes to be set right below the title header:
-
-[source,text]
-----
-= My awesome how-to
+= Creating a container for a Vert.x app packaged as an executable uber-jar
 :page-permalink: /
-:page-github: vertx-howtos/my-howto
+:page-github: vertx-howtos/executable-jar-docker-howto
+
+== What you will create
+
+You will create a container for a Vert.x app packaged as an executable https://stackoverflow.com/a/11947093/2133695[_uber-jar_].
+
+The how-to consists in a couple of files:
+
+. the `docker-maven/Dockerfile`, for Maven users, or
+. the `docker-gradle/Dockerfile`, for Gradle users.
+
+== What you need
+
+* A text editor or IDE
+* Docker
+
+== Using Maven
+
+=== Generate the project
+
+First, generate the project from https://start.vertx.io:
+
+. Select the `Maven` build type
+. Set the `artifactId` to `container-uber-jar`
+. Select the `JDK 11` JDK version
+. Click on generate and extract the content somewhere on your disk
+
+image::using-maven.png[title="Generating a Maven Project", alt="Generating a Maven Project", align="center"]
+
+Alternatively, open a terminal and run:
+
+[source,bash]
+----
+curl -G https://start.vertx.io/starter.zip -d "artifactId=container-uber-jar" -d "jdkVersion=11" -d "buildTool=maven" --output container-uber-jar.zip
+unzip container-uber-jar.zip
 ----
 
-The `page-permalink` attribute ensures that `README.adoc` is rendered as `index.html` rather than `README.adoc`.
+Or, with HTTPie:
 
-The `page-github` attribute must contain the joint GitHub organization and repository so it can properly link to the GitHub repository, provide a direct edition link, and more.
-
-=== Jekyll configuration
-
-The Jekyll configuration shall not have to be tweaked much, here is the basic configuration that we use:
-
-[source,yaml]
+[source,bash]
 ----
-include::_config.yml[]
+http https://start.vertx.io/starter.zip artifactId==container-uber-jar jdkVersion==11 buildTool==maven --output container-uber-jar.zip
+unzip container-uber-jar.zip
 ----
 
-TIP: When running Jekyll, check the content of the `_site/` folder and adapt the `exclude` items to avoid pushing unnecessary content to the website.
+=== Configuring the Docker build
 
-=== Ruby environment
+At the root of the project, create a `docker-maven/Dockerfile` build file:
 
-It is strongly recommended to use either https://github.com/rbenv/rbenv[rbenv] or https://rvm.io/[RVM] for your Ruby installation.
-
-You will need https://bundler.io/[Bundler] to install all required dependencies:
-
+[source,dockerfile]
+.Docker build file for a Maven project
 ----
-$ gem install bundler
+include::docker-maven/Dockerfile[]
 ----
 
-You can then let _Bundler_ do the installation work:
+The Docker build has two stages:
 
-----
-$ bundle install
-----
+. Building the Maven project inside a `maven:3.6.3-openjdk-11` container
+. Copying the output of the build in a `openjdk:11-slim` container and configuring the entry point
 
-From time to time you may also update dependencies:
+The benefits of this approach are:
 
-----
-$ bundle update
-----
+- reproducible build: no matter who in the team runs the Docker build, it will always use the same Maven version and JDK version (both at build-time and run-time)
+- small container image size: the final container will be based on a slim JDK image and will only add the uber-jar file
 
-The dependencies are specified in the `Gemfile` file:
+To build the container, open a terminal at the root of the project and run:
 
-[source,ruby]
+[source,bash]
 ----
-include::Gemfile[]
+docker build -t com.example/container-uber-jar -f docker-maven/Dockerfile .
 ----
 
-TIP: Keep the `vertx-howtos-jekyll-theme` dependency up-to-date!
+== Using Gradle
 
-=== Running Jekyll
+=== Generate the project
 
-You can run Jekyll with a full auto-reload experience:
+First, generate the project from https://start.vertx.io:
+
+. Select the `Gradle` build type
+. Set the `artifactId` to `container-uber-jar`
+. Select the `JDK 11` JDK version
+. Click on generate and extract the content somewhere on your disk
+
+image::using-gradle.png[title="Generating a Gradle Project", alt="Generating a Gradle Project", align="center"]
+
+Alternatively, open a terminal and run:
+
+[source,bash]
+----
+curl -G https://start.vertx.io/starter.zip -d "artifactId=container-uber-jar" -d "jdkVersion=11" -d "buildTool=gradle" --output container-uber-jar.zip
+unzip container-uber-jar.zip
+----
+
+Or, with HTTPie:
+
+[source,bash]
+----
+http https://start.vertx.io/starter.zip artifactId==container-uber-jar jdkVersion==11 buildTool==gradle --output container-uber-jar.zip
+unzip container-uber-jar.zip
+----
+
+=== Configuring the Docker build
+
+At the root of the project, create a `docker-gradle/Dockerfile` build file:
+
+[source,dockerfile]
+.Docker build file for a Maven project
+----
+include::docker-gradle/Dockerfile[]
+----
+
+The Docker build has two stages:
+
+. Building the Gradle project inside a `gradle:6.8.3-jdk11` container
+. Copying the output of the build in a `openjdk:11-slim` container and configuring the entry point
+
+The benefits of this approach are:
+
+- reproducible build: no matter who in the team runs the Docker build, it will always use the same Gradle version and JDK version (both at build-time and run-time)
+- small container image size: the final container will be based on a slim JDK image and will only add the uber-jar file
+
+To build the container, open a terminal at the root of the project and run:
+
+[source,bash]
+----
+docker build -t com.example/container-uber-jar -f docker-gradle/Dockerfile .
+----
+
+== Running the application
+
+Now that you have built the container image, it is time to try it out!
+
+Open a terminal and run:
+
+[source,bash]
+----
+docker run -p 8888:8888 com.example/container-uber-jar
+----
+
+You should see messages like these on the console output:
 
 ----
-$ bundle exec jekyll server --watch --livereload
+HTTP server started on port 8888
+Mar 16, 2021 2:45:57 PM io.vertx.core.impl.launcher.commands.VertxIsolatedDeployer
+INFO: Succeeded in deploying verticle
 ----
 
-== How is the website being published?
+Then browse to http://localhost:8888 and get your greeting from the Vert.x app running in the container!
 
-The content first needs to be rendered by Jekyll, then the resulting web site files are being pushed to the repository `gh-pages` branch.
-GitHub pages then exposes the content of the `gh-pages` branch as the website.
+== Summary
 
-While you could do this manually, we automate the process with GitHub Actions.
-Pushing to the `master` branch triggers a deployment, and a daily cron job is in place.
+This document covered:
 
-== Misc
+. configuring a Docker build for Maven users,
+. configuring a Docker build for Gradle users.
 
-=== Code style
+== See also
 
-There is a `.editorconfig` file in this template repository with the 2-space indentation style that we prefer in Vert.x.
-
-In any case, favour readability in samples:
-
-- do not hesitate to use blank lines,
-- do not over-engineer,
-- use explicit short private methods rather than complicated lambdas expressions.
-
-=== Asciidoc style
-
-Asciidoc does not enforce any style.
-
-We recommended that you follow the https://asciidoctor.org/docs/asciidoc-recommended-practices/[Asciidoctor recommended practices], and especially the https://asciidoctor.org/docs/asciidoc-recommended-practices/#one-sentence-per-line["One sentence per line"] rule.
+- https://docs.docker.com/engine/reference/builder/[Dockerfile reference]
+- https://docs.docker.com/develop/develop-images/multistage-build/[Multi-stage builds introduction]
