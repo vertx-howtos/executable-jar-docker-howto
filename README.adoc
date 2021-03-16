@@ -110,7 +110,7 @@ unzip container-uber-jar.zip
 At the root of the project, create a `docker-gradle/Dockerfile` build file:
 
 [source,dockerfile]
-.Docker build file for a Maven project
+.Docker build file for a Gradle project
 ----
 include::docker-gradle/Dockerfile[]
 ----
