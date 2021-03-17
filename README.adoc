@@ -31,7 +31,7 @@ First, generate the project from https://start.vertx.io:
 . Select the `JDK 11` JDK version
 . Click on generate and extract the content somewhere on your disk
 
-image::using-maven.png[title="Generating a Maven Project", alt="Generating a Maven Project", align="center"]
+image::using-maven.png[title="Generating a Maven Project", alt="Generating a Maven Project", align="center",width=80%]
 
 Alternatively, open a terminal and run:
 
@@ -92,7 +92,7 @@ First, generate the project from https://start.vertx.io:
 . Select the `JDK 11` JDK version
 . Click on generate and extract the content somewhere on your disk
 
-image::using-gradle.png[title="Generating a Gradle Project", alt="Generating a Gradle Project", align="center"]
+image::using-gradle.png[title="Generating a Gradle Project", alt="Generating a Gradle Project", align="center",width=80%]
 
 Alternatively, open a terminal and run:
 
