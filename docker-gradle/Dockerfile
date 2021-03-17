@@ -15,4 +15,4 @@ WORKDIR $APP_DIR
 COPY --from=builder /project/build/libs/*-fat.jar $APP_DIR/$APP_FILE
 
 ENTRYPOINT ["sh", "-c"]
-CMD ["exec java -jar $APP_FILE"]
+CMD ["exec", "java", "-jar", "$APP_FILE"]
