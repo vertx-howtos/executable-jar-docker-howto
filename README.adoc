@@ -67,7 +67,7 @@ endif::env-github[]
 The Docker build has two stages:
 
 . Building the Maven project inside a `maven:3.6.3-openjdk-11` container
-. Copying the output of the build in a `openjdk:11-slim` container and configuring the entry point
+. Copying the output of the build in a `adoptopenjdk:11-jre-hotspot` container and configuring the entry point
 
 The benefits of this approach are:
 
@@ -128,7 +128,7 @@ endif::env-github[]
 The Docker build has two stages:
 
 . Building the Gradle project inside a `gradle:6.8.3-jdk11` container
-. Copying the output of the build in a `openjdk:11-slim` container and configuring the entry point
+. Copying the output of the build in a `adoptopenjdk:11-jre-hotspot` container and configuring the entry point
 
 The benefits of this approach are:
 
