@@ -14,11 +14,11 @@ repositories {
   mavenCentral()
 }
 
-val vertxVersion = "4.0.3"
+val vertxVersion = "5.0.0.CR2"
 val junitJupiterVersion = "5.7.0"
 
 val mainVerticleName = "com.example.container_uber_jar.MainVerticle"
-val launcherClassName = "io.vertx.core.Launcher"
+val launcherClassName = "io.vertx.launcher.application.VertxApplication"
 
 val watchForChange = "src/**/*"
 val doOnChange = "${projectDir}/gradlew classes"
@@ -30,6 +30,7 @@ application {
 dependencies {
   implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
   implementation("io.vertx:vertx-core")
+  implementation("io.vertx:vertx-launcher-application")
   testImplementation("io.vertx:vertx-junit5")
   testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 }
