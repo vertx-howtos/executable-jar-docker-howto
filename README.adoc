@@ -31,8 +31,6 @@ First, generate the project from https://start.vertx.io:
 . Select the `JDK 11` JDK version
 . Click on generate and extract the content somewhere on your disk
 
-image::using-maven.png[title="Generating a Maven Project", alt="Generating a Maven Project", align="center",width=80%]
-
 Alternatively, open a terminal and run:
 
 [source,bash]
@@ -66,8 +64,8 @@ endif::env-github[]
 
 The Docker build has two stages:
 
-. Building the Maven project inside a `maven:3.6.3-openjdk-11` container
-. Copying the output of the build in a `adoptopenjdk:11-jre-hotspot` container and configuring the entry point
+. Building the Maven project inside a `maven:3.9.9-eclipse-temurin-11` container
+. Copying the output of the build in a `eclipse-temurin:11` container and configuring the entry point
 
 The benefits of this approach are:
 
@@ -91,8 +89,6 @@ First, generate the project from https://start.vertx.io:
 . Set the `artifactId` to `container-uber-jar`
 . Select the `JDK 11` JDK version
 . Click on generate and extract the content somewhere on your disk
-
-image::using-gradle.png[title="Generating a Gradle Project", alt="Generating a Gradle Project", align="center",width=80%]
 
 Alternatively, open a terminal and run:
 
@@ -127,8 +123,8 @@ endif::env-github[]
 
 The Docker build has two stages:
 
-. Building the Gradle project inside a `gradle:6.8.3-jdk11` container
-. Copying the output of the build in a `adoptopenjdk:11-jre-hotspot` container and configuring the entry point
+. Building the Gradle project inside a `gradle:8.1.1-jdk11` container
+. Copying the output of the build in a `eclipse-temurin:11` container and configuring the entry point
 
 The benefits of this approach are:
 
@@ -157,7 +153,7 @@ You should see messages like these on the console output:
 
 ----
 HTTP server started on port 8888
-Mar 16, 2021 2:45:57 PM io.vertx.core.impl.launcher.commands.VertxIsolatedDeployer
+Dec 02, 2024 5:17:19 PM io.vertx.launcher.application.VertxApplication
 INFO: Succeeded in deploying verticle
 ----
 

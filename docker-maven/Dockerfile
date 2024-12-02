@@ -1,13 +1,13 @@
 # 1st Docker build stage: build the project with Maven
-FROM maven:3.6.3-openjdk-11 as builder
+FROM maven:3.9.9-eclipse-temurin-11 AS builder
 WORKDIR /project
 COPY . /project/
 RUN mvn package -DskipTests -B
 
 # 2nd Docker build stage: copy builder output and configure entry point
-FROM adoptopenjdk:11-jre-hotspot
-ENV APP_DIR /application
-ENV APP_FILE container-uber-jar.jar
+FROM eclipse-temurin:11
+ENV APP_DIR=/application
+ENV APP_FILE=container-uber-jar.jar
 
 EXPOSE 8888
 
