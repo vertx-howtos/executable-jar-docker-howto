@@ -14,7 +14,7 @@ repositories {
   mavenCentral()
 }
 
-val vertxVersion = "5.0.0.CR2"
+val vertxVersion = "5.0.5"
 val junitJupiterVersion = "5.7.0"
 
 val mainVerticleName = "com.example.container_uber_jar.MainVerticle"
